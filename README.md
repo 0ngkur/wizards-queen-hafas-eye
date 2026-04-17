@@ -63,8 +63,96 @@ Options:
                           Choices: google, yandex, bing, tineye, baidu
 ```
 
+### Examples
+
+```bash
+# Basic hunt
+python hafa_eye.py photo.jpg
+
+# Verbose + JSON output
+python hafa_eye.py photo.jpg -v -o results.json
+
+# HTML report
+python hafa_eye.py photo.jpg --html report.html
+
+# Only Google + Yandex
+python hafa_eye.py photo.jpg --engines google yandex
+
+# No face detection (faster, for logos/objects too)
+python hafa_eye.py photo.jpg --no-faces
+
+# Skip social enumeration (faster)
+python hafa_eye.py photo.jpg --no-social
+```
+
+---
+
+## 🔧 Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    HaFa's EyE v3.0                      │
+├─────────┬───────────┬───────────┬───────────┬───────────┤
+│  EXIF   │   Face    │  Reverse  │   Name    │  Social   │
+│  Intel  │ Analyzer  │  Image    │ Extractor │  Profile  │
+│ Module  │ & Cropper │  Search   │           │  Enumer.  │
+├─────────┴───────────┼───────────┤           ├───────────┤
+│                     │ • Google  │           │ 15+ sites │
+│  Pillow / OpenCV    │ • Yandex  │ Heuristic │ Parallel  │
+│  face_recognition   │ • Bing    │ NLP       │ Checking  │
+│                     │ • TinEye  │           │           │
+│                     │ • Baidu   │           │           │
+├─────────────────────┴───────────┴───────────┴───────────┤
+│              Result Processor & Deduplicator             │
+├──────────────┬──────────────────┬────────────────────────┤
+│  Rich UI     │  JSON Export     │  HTML Report           │
+└──────────────┴──────────────────┴────────────────────────┘
+```
+
+---
+
+## 📊 Output Formats
+
+### Terminal (Rich UI)
+Beautiful color-coded tables with progress bars, categorized results, and confidence scores.
+
+### JSON Report
+Complete machine-readable output including facial encodings, EXIF data, all results, and social profiles.
+
+### HTML Report
+Professional dark-themed report you can open in any browser and share.
+
 ---
 
 ## ⚠️ Legal & Ethical Notice
 
 > **This tool is provided for educational and authorized security research purposes ONLY.**
+>
+> - Do NOT use for stalking, harassment, or unauthorized surveillance
+> - Respect all applicable privacy laws (GDPR, CCPA, etc.)
+> - Automated scraping may violate platform Terms of Service
+> - You are responsible for ensuring your use is legal in your jurisdiction
+> - Always obtain proper authorization before conducting OSINT investigations
+
+---
+
+## 🏗️ Dependencies
+
+| Package | Purpose | Required? |
+|---------|---------|-----------|
+| `requests` | HTTP requests | ✅ Yes |
+| `beautifulsoup4` | HTML parsing | ✅ Yes |
+| `numpy` | Numerical ops | ✅ Yes |
+| `Pillow` | Image + EXIF | ✅ Yes |
+| `rich` | Terminal UI | ⚡ Recommended |
+| `opencv-python` | Image processing | 🔧 Optional |
+| `face-recognition` | Face detection | 🔧 Optional |
+| `dlib` | ML backend | 🔧 Optional |
+
+> **Note**: The tool works without `opencv-python`, `face-recognition`, and `dlib` — it will simply skip face detection and search the full image instead.
+
+---
+
+## 📝 License
+
+Educational and research use only. See the ethical notice above.
